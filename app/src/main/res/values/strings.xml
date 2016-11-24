@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">CriminalIntent</string>
+    <string name="Crime_title_hint">Enter a title for the crime</string>
+    <string name="Crime_Title_label">Title</string>
+    <string name="Crime_Details_Label">Details</string>
+    <string name="Crime_Solved">Solved</string>
+    <string name="Title_DatePicker">Date of Crime</string>
+    <string name="button_oke">oke</string>
+    <string name="new_crime">New Crime</string>
+    <string name="ActionBar_Crime">Crime</string>
+    <string name="button_saved">Save</string>
+    <string name="toast_saved">Saved</string>
+    <string name="button_delete">Delete</string>
+    <string name="toast_deleted">Deleted</string>
+    <string name="toast_cant_delete">Cannot Delete</string>
+    <string name="button_Suspect">Choose Suspect</string>
+    <string name="button_report">Crime Report</string>
+    <string name="crime_report_suspect">The suspect is %s.</string>
+    <string name="crime_report_solved">The case is solved</string>
+    <string name="crime_report_unsolved">The case is unsolved</string>
+    <string name="crime_report_no_suspect">There is no suspect</string>
+    <string name="crime_send_report">CriminalIntent</string>
+</resources>
