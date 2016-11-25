@@ -15,10 +15,12 @@
     <string name="toast_cant_delete">Cannot Delete</string>
     <string name="button_Suspect">Choose Suspect</string>
     <string name="button_report">Crime Report</string>
+    <string name="report_crime">%1$s! The Crime was discovered on %2$s, %3$s and %4$s</string>
     <string name="crime_report_suspect">The suspect is %s.</string>
     <string name="crime_report_solved">The case is solved</string>
     <string name="crime_report_unsolved">The case is unsolved</string>
     <string name="crime_report_no_suspect">There is no suspect</string>
-    <string name="crime_send_report">CriminalIntent</string>
+    <string name="crime_report_subject">CriminalIntent Crime Report</string>
+    <string name="sen_report">Send crime report via</string>
     <string name="Title_TimePicker">Time of Crime</string>
 </resources>

@@ -14,6 +14,7 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.text.DateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -35,6 +36,7 @@ public class CrimeFragment extends Fragment {
     private List<Crime> mCrimes;
     private CrimeLab mCrimeLab;
     private Button mbtn_delete;
+    private Button mbtn_sendreport;
 
     public static CrimeFragment newIntance(UUID uuid) {
         Bundle args = new Bundle();
@@ -53,13 +55,26 @@ public class CrimeFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_crime, container, false);
+
         medtxt_title_crime = (EditText) v.findViewById(R.id.etxt_tittle_crime);
         mbtn_Date = (Button) v.findViewById(R.id.btn_Date);
         mCheckBox_Solved = (CheckBox) v.findViewById(R.id.chbx_Solve);
         mbtn_saved =(Button) v.findViewById(R.id.btn_saved);
         mbtn_delete = (Button) v.findViewById(R.id.btn_delete);
+        mbtn_sendreport = (Button) v.findViewById(R.id.btn_report);
+
+        mbtn_sendreport.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_SEND);
+                intent.setType("text/plain");
+                intent.putExtra(Intent.EXTRA_TEXT, getReportCrime());
+                intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.crime_report_suspect));
+                startActivity(intent);
+            }
+        });
 
         mbtn_Date.setText(mCrime.getDate().toString());
         mbtn_Date.setOnClickListener(new View.OnClickListener() {
@@ -109,6 +124,23 @@ public class CrimeFragment extends Fragment {
         });
         return v;
     }
+
+    public String getReportCrime(){
+        String stringSolved = null;
+        String stringSuspect = mCrime.getSuspect();
+        String stringDate = android.text.format.DateFormat.format("EEEE, MM dd", mCrime.getDate()).toString();
+
+        if(mCrime.getSolved())
+            stringSolved = getString(R.string.crime_report_solved);
+        else
+        if(mCrime.getSuspect() != null)
+            stringSuspect = getString(R.string.crime_report_suspect, mCrime.getSuspect());
+        else
+            stringSuspect = getString(R.string.crime_report_no_suspect);
+        String report = getString(R.string.report_crime, mCrime.getTitle(), stringDate, stringSolved, stringSuspect);
+            return report;
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         {
