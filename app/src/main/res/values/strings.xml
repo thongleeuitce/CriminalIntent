@@ -21,6 +21,6 @@
     <string name="crime_report_unsolved">The case is unsolved</string>
     <string name="crime_report_no_suspect">There is no suspect</string>
     <string name="crime_report_subject">CriminalIntent Crime Report</string>
-    <string name="sen_report">Send crime report via</string>
+    <string name="send_report">Send crime report via</string>
     <string name="Title_TimePicker">Time of Crime</string>
 </resources>

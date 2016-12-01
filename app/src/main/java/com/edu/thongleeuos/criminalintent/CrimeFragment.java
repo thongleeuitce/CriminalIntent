@@ -2,7 +2,10 @@ package com.edu.thongleeuos.criminalintent;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
@@ -27,6 +30,9 @@ public class CrimeFragment extends Fragment {
     private static final String ARG_CRIME_ID = "arg_crime_id";
     private static final String DATE_DIALOG = "date_dialog";
     private static final String EXTRA_DATE = "extra_date";
+    private static final int REQUEST_DATE = 0;
+    private static final int REQUEST_SUSPECT = 1;
+
     private Crime mCrime;
     private EditText medtxt_title_crime;
     private Button mbtn_Date;
@@ -37,6 +43,7 @@ public class CrimeFragment extends Fragment {
     private CrimeLab mCrimeLab;
     private Button mbtn_delete;
     private Button mbtn_sendreport;
+    private Button mbtn_choose_suspect;
 
     public static CrimeFragment newIntance(UUID uuid) {
         Bundle args = new Bundle();
@@ -64,6 +71,15 @@ public class CrimeFragment extends Fragment {
         mbtn_saved =(Button) v.findViewById(R.id.btn_saved);
         mbtn_delete = (Button) v.findViewById(R.id.btn_delete);
         mbtn_sendreport = (Button) v.findViewById(R.id.btn_report);
+        mbtn_choose_suspect = (Button) v.findViewById(R.id.btn_suspect);
+
+        mbtn_choose_suspect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
+                startActivityForResult(intent,REQUEST_SUSPECT);
+            }
+        });
 
         mbtn_sendreport.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -71,7 +87,8 @@ public class CrimeFragment extends Fragment {
                 Intent intent = new Intent(Intent.ACTION_SEND);
                 intent.setType("text/plain");
                 intent.putExtra(Intent.EXTRA_TEXT, getReportCrime());
-                intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.crime_report_suspect));
+                intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.crime_report_suspect, mCrime.getSuspect()));
+                intent = Intent.createChooser(intent, getString(R.string.send_report));
                 startActivity(intent);
             }
         });
@@ -146,10 +163,27 @@ public class CrimeFragment extends Fragment {
         {
             if (resultCode != Activity.RESULT_OK)
                 return;
-            if (requestCode == 0) {
+            if (requestCode == REQUEST_DATE) {
                 Date date = (Date) data.getSerializableExtra(DatePickerFragment.TARG_DATE);
                 mCrime.setDate(date);
                 mbtn_Date.setText(mCrime.getDate().toString());
+            }
+            if (requestCode == REQUEST_SUSPECT && data != null){
+                Uri uri = data.getData();
+                String[] queryfiled = new String[]{
+                        ContactsContract.Contacts.DISPLAY_NAME
+                };
+                Cursor cursor = getActivity().getContentResolver().query(uri, queryfiled, null, null, null);
+                try{
+                    if(cursor.getCount() == 0)
+                        return;
+                    cursor.moveToFirst();
+                    mCrime.setSuspect(cursor.getString(0));
+                    mbtn_choose_suspect.setText(cursor.getString(0));
+                }
+                finally {
+                    cursor.close();
+                }
             }
             return;
         }
