@@ -1,5 +1,6 @@
 package com.edu.thongleeuos.criminalintent;
 
+import java.io.File;
 import java.util.Date;
 import java.util.UUID;
 
@@ -51,5 +52,8 @@ public class Crime {
     }
     public void setSuspect(String Suspect){
         mSuspect = Suspect;
+    }
+    public String PhotoFileName(){
+        return "IMG" + getId().toString() + ".jpg";
     }
 }

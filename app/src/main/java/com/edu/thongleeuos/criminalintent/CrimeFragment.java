@@ -2,10 +2,12 @@ package com.edu.thongleeuos.criminalintent;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
@@ -15,8 +17,11 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Toast;
 
+import java.io.File;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.List;
@@ -32,6 +37,7 @@ public class CrimeFragment extends Fragment {
     private static final String EXTRA_DATE = "extra_date";
     private static final int REQUEST_DATE = 0;
     private static final int REQUEST_SUSPECT = 1;
+    private static final int REQUEST_PHOTO = 2;
 
     private Crime mCrime;
     private EditText medtxt_title_crime;
@@ -44,6 +50,9 @@ public class CrimeFragment extends Fragment {
     private Button mbtn_delete;
     private Button mbtn_sendreport;
     private Button mbtn_choose_suspect;
+    private ImageButton mbtn_camera;
+    private ImageView mimgv_photo;
+    private File mPhotoFile;
 
     public static CrimeFragment newIntance(UUID uuid) {
         Bundle args = new Bundle();
@@ -59,6 +68,7 @@ public class CrimeFragment extends Fragment {
         mCrimeLab = CrimeLab.get(getActivity());
         mCrime = new Crime();
         mCrime.setId((UUID) getArguments().getSerializable(ARG_CRIME_ID));
+        mPhotoFile = mCrimeLab.getPhotoFile(mCrime);
     }
 
     @Override
@@ -72,6 +82,27 @@ public class CrimeFragment extends Fragment {
         mbtn_delete = (Button) v.findViewById(R.id.btn_delete);
         mbtn_sendreport = (Button) v.findViewById(R.id.btn_report);
         mbtn_choose_suspect = (Button) v.findViewById(R.id.btn_suspect);
+        mbtn_camera = (ImageButton) v.findViewById(R.id.btn_camera);
+        mimgv_photo = (ImageView) v.findViewById(R.id.imgv_photo);
+        final PackageManager packagemanager = getActivity().getPackageManager();
+
+        mbtn_camera.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+                if(mPhotoFile != null && intent.resolveActivity(packagemanager) != null){
+                    Uri uri = Uri.fromFile(mPhotoFile);
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+                    startActivityForResult(intent, REQUEST_PHOTO);
+                }
+            }
+        });
+        if(mCrimeLab.getCrime(mCrime.getId()) != null){
+            mCrime = mCrimeLab.getCrime(mCrime.getId());
+            if(mCrime.getSuspect() != null)
+                mbtn_choose_suspect.setText(mCrimeLab.getCrime(mCrime.getId()).getSuspect());
+        }
 
         mbtn_choose_suspect.setOnClickListener(new View.OnClickListener() {
             @Override

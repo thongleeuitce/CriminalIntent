@@ -4,8 +4,11 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Environment;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.UUID;
 
@@ -64,6 +67,12 @@ public class CrimeLab{
         finally {
             cursor.close();
         }
+    }
+    public File getPhotoFile(Crime crime){
+        File externalFileDir = mContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        if(externalFileDir == null)
+            return null;
+        return new File(externalFileDir, crime.PhotoFileName());
     }
     private CrimeCursorWrapper queryCrime(String whereclause, String[] wherearg){
         Cursor cursor = mSQLiteDatabase.query(CrimeTable.NAME, null, whereclause, wherearg, null, null, null);
