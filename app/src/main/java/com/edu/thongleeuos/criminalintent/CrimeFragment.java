@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.Path;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -44,8 +46,6 @@ public class CrimeFragment extends Fragment {
     private Button mbtn_Date;
     private Button mbtn_saved;
     private CheckBox mCheckBox_Solved;
-    private boolean Check_Crime;
-    private List<Crime> mCrimes;
     private CrimeLab mCrimeLab;
     private Button mbtn_delete;
     private Button mbtn_sendreport;
@@ -85,6 +85,7 @@ public class CrimeFragment extends Fragment {
         mbtn_camera = (ImageButton) v.findViewById(R.id.btn_camera);
         mimgv_photo = (ImageView) v.findViewById(R.id.imgv_photo);
         final PackageManager packagemanager = getActivity().getPackageManager();
+        UpdatePhotoView();
 
         mbtn_camera.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -189,6 +190,15 @@ public class CrimeFragment extends Fragment {
             return report;
     }
 
+    public void UpdatePhotoView(){
+        if(mPhotoFile == null || !mPhotoFile.exists())
+            mimgv_photo.setImageDrawable(null);
+        else{
+            Bitmap bitmap = PictureUtils.getScaledBitmap(mPhotoFile.getPath(), getActivity());
+            mimgv_photo.setImageBitmap(bitmap);
+        }
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         {
@@ -216,6 +226,8 @@ public class CrimeFragment extends Fragment {
                     cursor.close();
                 }
             }
+            if (requestCode == REQUEST_PHOTO)
+                UpdatePhotoView();
             return;
         }
     }
